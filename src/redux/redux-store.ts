@@ -1,8 +1,9 @@
-import {combineReducers, createStore} from "redux";
+import {applyMiddleware, combineReducers, createStore} from "redux";
 import profileReducer from "./profile-reducer";
 import dialogsReducer from "./dialogs-reducer";
 import usersReducer from "./users-reducer";
 import authReducer from "./auth-reducer";
+import thunkMiddleware from 'redux-thunk'
 
 export type StoreType = typeof store
 
@@ -13,7 +14,7 @@ let rootReducer = combineReducers({//создаем объект, у кот ес
     auth: authReducer
     // sidebar: sidebarReducer
 })
-const store = createStore(rootReducer);//автоматически createStore создает внутри себя state, у кот есть 3 св-ва(profilePage,dialogsPage,sidebar)
+const store = createStore(rootReducer, applyMiddleware(thunkMiddleware));//автоматически createStore создает внутри себя state, у кот есть 3 св-ва(profilePage,dialogsPage,sidebar)
 export type AppStateType = ReturnType<typeof rootReducer>//дай мне возвращаемый тип
 
 
