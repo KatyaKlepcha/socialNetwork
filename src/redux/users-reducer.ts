@@ -1,3 +1,6 @@
+import {usersAPI} from "../api/api";
+import {Dispatch} from "redux";
+
 export type UserType = {
     id: number
     photos: PhotosType
@@ -18,8 +21,8 @@ type LocationType = {
 }
 
 export type UsersActionsTypes =
-    ReturnType<typeof follow>
-    | ReturnType<typeof unfollow>
+    ReturnType<typeof followSuccess>
+    | ReturnType<typeof unfollowSuccess>
     | ReturnType<typeof setUsers>
     | ReturnType<typeof setCurrentPage>
     | ReturnType<typeof setTotalUsersCount>
@@ -44,9 +47,7 @@ const initialState: InitialStateType = {//однораз объект в слу�
     followingInProgress: []
 };
 
-type followingInProgressType = {
-
-}
+type followingInProgressType = {}
 export type InitialStateType = {
     users: Array<UserType>
     pageSize: number
@@ -100,8 +101,8 @@ const usersReducer = (state: InitialStateType = initialState, action: UsersActio
                 ...state,
                 followingInProgress: action.isFetching
                     ? [...state.followingInProgress, action.userId]
-                    : state.followingInProgress.filter(id=>id !== action.userId)
-        }
+                    : state.followingInProgress.filter(id => id !== action.userId)
+            }
         }
 
         default:
@@ -109,8 +110,8 @@ const usersReducer = (state: InitialStateType = initialState, action: UsersActio
     }
 }
 
-export const follow = (userId: number) => ({type: FOLLOW, userId}) as const//объект как константа
-export const unfollow = (userId: number) => ({type: UNFOLLOW, userId}) as const//воспринимай этот бъект, как константу
+export const followSuccess = (userId: number) => ({type: FOLLOW, userId}) as const//объект как константа
+export const unfollowSuccess = (userId: number) => ({type: UNFOLLOW, userId}) as const//воспринимай этот бъект, как константу
 export const setUsers = (users: Array<UserType>) => ({type: SET_USERS, users}) as const//воспринимай этот бъект, как константу
 export const setCurrentPage = (currentPage: number) => ({type: SET_CURRENT_PAGE, currentPage}) as const//воспринимай этот бъект, как константу
 export const setTotalUsersCount = (totalUsersCount: number) => ({
@@ -118,11 +119,55 @@ export const setTotalUsersCount = (totalUsersCount: number) => ({
     count: totalUsersCount
 }) as const//воспринимай этот бъект, как константу
 export const toggleIsFetching = (isFetching: boolean) => ({type: TOGGLE_IS_FETCHING, isFetching}) as const
-export const toggleFollowingProgress = (isFetching: boolean,userId: number) => ({
+export const toggleFollowingProgress = (isFetching: boolean, userId: number) => ({
     type: TOGGLE_IS_FOLLOWING_PROGRESS,
     isFetching,
     userId
 }) as const
+
+
+export const getUsers = (currentPage: number,pageSize: number) => {
+
+    return (dispatch: Dispatch) => {
+        dispatch(toggleIsFetching(true));
+
+        usersAPI.getUsers(currentPage, pageSize).then(data => {
+            dispatch(toggleIsFetching(false));
+            dispatch(setUsers(data.items));//это и есть массив наших пользователей
+            dispatch(setTotalUsersCount(data.totalCount));
+        })//все, что мы можем отправить на сервак
+    }
+}
+
+export const follow = (userId:number) => {
+
+    return (dispatch: Dispatch) => {
+        dispatch(toggleFollowingProgress(true,userId));
+        usersAPI.follow(userId)
+            .then(response => {//затем выполни вот этот callback
+                if (response.data.resultCode === 0) {
+                    dispatch(followSuccess(userId))
+                }
+                dispatch(toggleFollowingProgress(false, userId))
+            })
+    }
+}
+
+export const unfollow = (userId:number) => {
+
+    return (dispatch: Dispatch) => {
+        dispatch(toggleFollowingProgress(true,userId));
+        usersAPI.unfollow(userId)
+            .then(response => {//затем выполни вот этот callback
+                if (response.data.resultCode === 0) {
+                    dispatch(unfollowSuccess(userId))
+                }
+                dispatch(toggleFollowingProgress(false, userId))
+            })
+    }
+}
+
+
 
 
 export default usersReducer
