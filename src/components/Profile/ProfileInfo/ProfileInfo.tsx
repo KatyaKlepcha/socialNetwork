@@ -11,14 +11,17 @@ const ProfileInfo = (props: ProfileInfoPropsType) => {
     }
     return (
         <div>
-            <h1>{props.profile.fullName}</h1>
+
             <div>
-                <img src='https://www.selltoearn.com/2018/norway-pier-dock-landscape120419.jpg'/>
+                <img src='https://www.selltoearn.com/2018/norway-pier-dock-landscape120419.jpg' alt={'avatar'}/>
             </div>
             <div className={s.descriptionBlock}>
-                <img src = {props.profile.photos?.large}/>
+                <img src = {props.profile.photos?.large} alt={'ava'}/>
                 ava+description
             </div>
+            <h1>{props.profile.fullName}</h1>
+            <div>{props.profile.lookingForAJob}</div>
+            
         </div>
     )
 }
