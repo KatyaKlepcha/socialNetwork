@@ -1,3 +1,4 @@
+import {usersAPI} from "../api/api";
 
 type PostsType = {
     id: number
@@ -10,7 +11,7 @@ type ContactsType = {
     website: null,
     vk: "vk.com/dimych",
     twitter: "https://twitter.com/@sdf",
-    instagram: "instagra.com/sds",
+    instagram: "instagram.com/sds",
     youtube: null,
     github: "github.com",
     mainLink: null
@@ -27,15 +28,16 @@ export type ProfileType = {
     lookingForAJob: boolean,
     lookingForAJobDescription: string
     fullName: string
-    userId: number
+    userId: string
     photos: PhotosType
+    isAuth: boolean
 }
 
 let initialState = {//однораз объект в случае, если state сюда не придет, будешь этим initialState
     posts: [
         {id: 1, message: 'Hi, how are you?', likesCount: 15},
         {id: 2, message: 'It is my first post', likesCount: 20}
-    ] as Array <PostsType>,
+    ] as Array<PostsType>,
     newPostText: '',
     profile: {} as ProfileType
 }
@@ -51,7 +53,7 @@ export const ADD_POST = 'ADD-POST'
 const UPDATE_NEW_POST_TEXT = 'UPDATE-NEW-POST-TEXT'//используем эти константы,для того, чтобы не использовать строки
 const SET_USER_PROFILE = 'SET_USER_PROFILE'//используем эти константы,для того, чтобы не использовать строки
 
-const profileReducer = (state: InitialStateType = initialState, action: ProfileActionsTypes):InitialStateType => {
+const profileReducer = (state: InitialStateType = initialState, action: ProfileActionsTypes): InitialStateType => {
 
     switch (action.type) {
         case ADD_POST: {
@@ -92,5 +94,9 @@ export const updateNewPostTextActionCreator = (text: string) => ({
     newText: text
 }) as const//воспринимай этот бъект, как константу
 export const setUserProfile = (profile: any) => ({type: SET_USER_PROFILE, profile}) as const//объект как константа
-
+export const getUserProfile = (userId: string) => (dispatch: any) => {
+    usersAPI.getProfile(userId).then(response => {
+        dispatch(setUserProfile(response.data))
+    })
+}
 export default profileReducer
