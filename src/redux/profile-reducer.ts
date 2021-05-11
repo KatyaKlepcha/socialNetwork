@@ -38,7 +38,6 @@ let initialState = {//однораз объект в случае, если stat
         {id: 1, message: 'Hi, how are you?', likesCount: 15},
         {id: 2, message: 'It is my first post', likesCount: 20}
     ] as Array<PostsType>,
-    newPostText: '',
     profile: {} as ProfileType,
     status: ''
 }
@@ -46,13 +45,11 @@ let initialState = {//однораз объект в случае, если stat
 type InitialStateType = typeof initialState
 
 export type ProfileActionsTypes = ReturnType<typeof addPostActionCreator>
-    | ReturnType<typeof updateNewPostTextActionCreator>
     | ReturnType<typeof setUserProfile>
     | ReturnType<typeof setStatus>
 
 
 export const ADD_POST = 'ADD-POST'
-const UPDATE_NEW_POST_TEXT = 'UPDATE-NEW-POST-TEXT'//используем эти константы,для того, чтобы не использовать строки
 const SET_USER_PROFILE = 'SET_USER_PROFILE'//используем эти константы,для того, чтобы не использовать строки
 const SET_STATUS = 'SET_STATUS'//используем эти константы,для того, чтобы не использовать строки
 
@@ -62,24 +59,16 @@ const profileReducer = (state: InitialStateType = initialState, action: ProfileA
         case ADD_POST: {
             const newPost = {
                 id: 5,
-                message: state.newPostText,//до конца не смог проанализир, что есть у этого объекта из-за ReturnType
+                message: action.newPostText,//до конца не смог проанализир, что есть у этого объекта из-за ReturnType
                 // message: action.newPostText,
                 likesCount: 0
             };
             return {
                 ...state,
-                posts: [...state.posts, newPost],
-                newPostText: ''
+                posts: [...state.posts, newPost]
             };
         }
 
-
-        case UPDATE_NEW_POST_TEXT: {
-            return {
-                ...state,
-                newPostText: action.newText
-            }
-        }
         case SET_STATUS: {
             return {
                 ...state,
@@ -97,11 +86,7 @@ const profileReducer = (state: InitialStateType = initialState, action: ProfileA
     }
 }
 
-export const addPostActionCreator = () => ({type: ADD_POST}) as const//объект как константа
-export const updateNewPostTextActionCreator = (text: string) => ({
-    type: UPDATE_NEW_POST_TEXT,
-    newText: text
-}) as const//воспринимай этот бъект, как константу
+export const addPostActionCreator = (newPostText: string) => ({type: ADD_POST, newPostText}) as const//объект как константа
 export const setUserProfile = (profile: any) => ({type: SET_USER_PROFILE, profile}) as const//объект как константа
 export const setStatus = (status: string) => ({type: SET_STATUS, status}) as const//объект как константа
 export const getUserProfile = (userId: string) => (dispatch: any) => {
