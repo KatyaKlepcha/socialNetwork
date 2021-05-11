@@ -2,7 +2,7 @@ import React from 'react'
 import {AppStateType} from "../../redux/redux-store";
 import Dialogs from "./Dialogs";
 import {connect} from "react-redux";
-import {sendMessageCreator, updateNewMessageBodyCreator} from "../../redux/dialogs-reducer";
+import {sendMessageCreator} from "../../redux/dialogs-reducer";
 import {withAuthRedirect} from "../../hoc/withAuthRedirect";
 import {compose} from "redux";
 
@@ -14,11 +14,8 @@ const mapStateToProps = (state: AppStateType) => {//смысл этой фции
 }
 const mapDispatchToProps = (dispatch: any) => {
     return {
-        updateNewMessageBody: (body: string)=>{
-            dispatch(updateNewMessageBodyCreator(body))
-        },
-        sendMessage:()=>{
-            dispatch(sendMessageCreator())
+        sendMessage:(newMessageBody: string)=>{
+            dispatch(sendMessageCreator(newMessageBody))
         }
 
     }//этот объект callback-и, кот мы будем отправлять в презентационн компоненту
