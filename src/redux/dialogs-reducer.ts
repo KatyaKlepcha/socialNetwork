@@ -25,15 +25,12 @@ let initialState = {//писать :InitialStateType не надо ниже пр
         {id: 3, message: 'Can we meet?'},
         {id: 4, message: 'What are you doing'}
     ] as Array<MessagesType>,//воспринимай это массив как массив типа
-    newMessageBody: ''
 }
 
 export type DialogsActionsTypes =
-    ReturnType<typeof sendMessageCreator> |
-    ReturnType<typeof updateNewMessageBodyCreator>
+    ReturnType<typeof sendMessageCreator>
 
 
-const UPDATE_NEW_MESSAGE_BODY = 'UPDATE_NEW_MESSAGE_BODY' //создаем тип action-a
 const SEND_MESSAGE = 'SEND_MESSAGE' //создаем тип action-a
 
 export type InitialStateType = typeof initialState
@@ -41,17 +38,11 @@ export type InitialStateType = typeof initialState
 const dialogsReducer = (state: InitialStateType = initialState, action: ActionsTypes): InitialStateType=> {
 
     switch (action.type) {
-        case UPDATE_NEW_MESSAGE_BODY:
-            return {
-                ...state,
-                newMessageBody: action.body
-            }
 
         case SEND_MESSAGE:
-            let body = state.newMessageBody;
+            let body = action.newMessageBody;
             return {
                 ...state,
-                newMessageBody: '',
                 messages: [...state.messages, {id: 5, message: body}]
             };
         default:
@@ -60,11 +51,6 @@ const dialogsReducer = (state: InitialStateType = initialState, action: ActionsT
     return state;
 }
 
-export const sendMessageCreator = () => ({type: SEND_MESSAGE}) as const//объект как константа
-export const updateNewMessageBodyCreator = (body: string) => ({
-    type: UPDATE_NEW_MESSAGE_BODY,
-    body: body
-}) as const//воспринимай этот  объект, как константу
-
+export const sendMessageCreator = (newMessageBody: string) => ({type: SEND_MESSAGE, newMessageBody}) as const//объект как константа
 
 export default dialogsReducer;
