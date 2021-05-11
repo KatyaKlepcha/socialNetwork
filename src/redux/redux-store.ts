@@ -3,7 +3,8 @@ import profileReducer from "./profile-reducer";
 import dialogsReducer from "./dialogs-reducer";
 import usersReducer from "./users-reducer";
 import authReducer from "./auth-reducer";
-import thunkMiddleware from 'redux-thunk'
+import thunkMiddleware from 'redux-thunk';
+import { reducer as formReducer } from 'redux-form'
 
 export type StoreType = typeof store
 
@@ -11,7 +12,8 @@ let rootReducer = combineReducers({//создаем объект, у кот ес
     profilePage: profileReducer,//по сути каждое св-во явл методом
     dialogsPage: dialogsReducer,//этот объект нужно воспринимать, как наш state
     usersPage: usersReducer,
-    auth: authReducer
+    auth: authReducer,
+    form: formReducer//это form название state-a в глобальном нашем общем стэйте
     // sidebar: sidebarReducer
 })
 const store = createStore(rootReducer, applyMiddleware(thunkMiddleware));//автоматически createStore создает внутри себя state, у кот есть 3 св-ва(profilePage,dialogsPage,sidebar)
