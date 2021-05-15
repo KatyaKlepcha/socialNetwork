@@ -2,6 +2,9 @@ import React from 'react';
 import s from './MyPosts.module.css'
 import Post from "./Post/Post";
 import {Field, InjectedFormProps, reduxForm} from "redux-form";
+import {maxLengthCreator, required} from "../../../utils/validators/validators";
+import {TextArea} from "../../common/FormsControls/FormsControls";
+import AddPostForm from "../AddNewPostForm/AddPostForm";
 
 
 export type PostsType = {
@@ -40,7 +43,7 @@ const MyPosts = (props: MyPostsPropsType) => {
     return (
         <div className={s.postBlock}>
             <h3>My posts</h3>
-            <AddPostFormRedux onSubmit={onAddPostText}/>
+            <AddPostForm onSubmit={onAddPostText}/>
             <div className={s.posts}>
                 {postsElements}
             </div>
@@ -48,23 +51,24 @@ const MyPosts = (props: MyPostsPropsType) => {
     )
 }
 
-type FormPostType = {
-    newPostText: string
-}
+// type FormPostType = {
+//     newPostText: string
+// }
+// const maxLength10 =  maxLengthCreator(10)
 
-const AddNewPostForm: React.FC<InjectedFormProps<FormPostType>> = (props) => {
-    return (
-        <form onSubmit={props.handleSubmit}>
-            <div>
-                <Field component="textarea" name="newPostText"/>
-
-            </div>
-            <div>
-                <button>Add Post</button>
-            </div>
-        </form>
-    )
-}
-
-const AddPostFormRedux = reduxForm<FormPostType>({form: 'ProfileAddNewPostForm'})(AddNewPostForm)
+// const AddNewPostForm: React.FC<InjectedFormProps<FormPostType>> = (props) => {
+//     return (
+//         <form onSubmit={props.handleSubmit}>
+//             <div>
+//                 <Field component={TextArea} name="newPostText" placeholder={'Post message'} validate={[required, maxLength10]}/>
+//
+//             </div>
+//             <div>
+//                 <button>Add Post</button>
+//             </div>
+//         </form>
+//     )
+// }
+//
+// const AddPostFormRedux = reduxForm<FormPostType>({form: 'ProfileAddNewPostForm'})(AddNewPostForm)
 export default MyPosts
